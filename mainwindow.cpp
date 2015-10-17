@@ -7,6 +7,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    socket=new QUdpSocket(this);
+    socket->bind(QHostAddress::LocalHost, 7755);
     connect(ui->pushButton,SIGNAL(clicked()),this, SLOT(sendPacket()));
 }
 
@@ -24,20 +26,17 @@ void MainWindow::sendPacket()
 void MainWindow::initSocket()
 {
     QByteArray data;
-    QDataStream out(&data, QIODevice::WriteOnly);
-    udp_header packet;
-    //out << qint64(0);
-    //out << qint8(type);
-    out << ui->textEdit_3->toPlainText();
-    //out.device()->seek(qint64(0));
-    //out << qint64(data.size() - sizeof(qint64));
-    QUdpSocket *socket = new QUdpSocket(this);
-    packet.src_port=socket->localPort();
-    packet.dst_port=ui->lineEdit_2->text().toInt();
-    QByteArray *byteArray=new QByteArray(ui->textEdit_3->toPlainText().toStdString().c_str());
-    packet.length=byteArray->length();
-    QByteArray _temp=packet.toByteArray();
-    QHostAddress adress(ui->lineEdit->text());
-    qint16 port(ui->lineEdit_2->text().toInt());
-    socket->writeDatagram(_temp, adress, port);
+         QDataStream out(&data, QIODevice::WriteOnly);
+
+         udp_header packet;
+         packet.src_port=7755;
+         packet.dst_port=ui->lineEdit_2->text().toInt();
+         packet.crc=0;
+         packet.message=ui->textEdit_3->toPlainText();
+         packet.length=packet.getLength();
+         out<<packet.toByteArray();
+         qDebug()<<packet.toByteArray();
+         qDebug()<<ui->textEdit_3->toPlainText();
+         QHostAddress adress=QHostAddress("172.18.7.15");
+         socket->writeDatagram(data, QHostAddress::LocalHost, qint16(10000));
 }

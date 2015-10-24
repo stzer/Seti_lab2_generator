@@ -7,8 +7,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    socket=new QUdpSocket(this);
     connect(ui->pushButton,SIGNAL(clicked()),this, SLOT(sendPacket()));
-    socket= new QUdpSocket(this);
 }
 
 MainWindow::~MainWindow()

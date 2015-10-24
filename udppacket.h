@@ -8,7 +8,7 @@ struct udp_header
     ushort dst_port;
     ushort length;
     ushort crc;
-
+    QString message;
     QByteArray toByteArray()
     {
         QByteArray temp("");
@@ -16,7 +16,13 @@ struct udp_header
         temp.append(dst_port);
         temp.append(length);
         temp.append(crc);
+        temp.append(message);
         return temp;
+    }
+    int getLength()
+    {
+        QByteArray temp(message.toStdString().c_str());
+        return temp.length();
     }
 };
 

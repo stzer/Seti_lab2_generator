@@ -21,8 +21,7 @@ private slots:
 private:
     Ui::MainWindow *ui;
     void initSocket();
-    QUdpSocket *socket ;
-
+    QUdpSocket *socket;
 };
 
 #endif // MAINWINDOW_H
